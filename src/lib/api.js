@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const API_URL = "https://gutendex.com/books";
 
 export async function fetchBooks(page = 1, search = "", genre = "") {
@@ -7,19 +9,19 @@ export async function fetchBooks(page = 1, search = "", genre = "") {
     topic: genre,
   });
 
-  const response = await fetch(`${API_URL}?${params}`);
-  if (!response.ok) {
+  const response = await axios.get(`${API_URL}?${params}`);
+  if (!response?.data) {
     throw new Error("Failed to fetch books");
   }
 
-  return response.json();
+  return response?.data;
 }
 
 export async function fetchBookById(id) {
-  const response = await fetch(`${API_URL}/${id}`);
-  if (!response.ok) {
+  const response = await axios.get(`${API_URL}/${id}`);
+  if (!response?.data) {
     throw new Error("Failed to fetch book");
   }
 
-  return response.json();
+  return response?.data;
 }
