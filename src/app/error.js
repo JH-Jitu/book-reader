@@ -9,8 +9,11 @@ export default function Error({ error, reset }) {
   }, [error]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <h2 className="text-2xl font-bold mb-4">Something went wrong!</h2>
+    <div className="container mx-auto px-4 py-8 text-center">
+      <h1 className="text-3xl font-bold mb-4">Something went wrong!</h1>
+      <p className="mb-4">
+        Sorry, but we encountered an error while loading the page.
+      </p>
       <Button onClick={() => reset()}>Try again</Button>
     </div>
   );
