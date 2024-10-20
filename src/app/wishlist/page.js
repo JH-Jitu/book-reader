@@ -6,6 +6,7 @@ import useLocalStorage from "@/hooks/useLocalStorage";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import BookCard from "@/components/BookCard";
+import { LoadingSkeleton } from "@/components/LoadingSkeletonCard";
 
 const WishlistClient = () => {
   const [wishlistIds, setWishlistIds] = useLocalStorage("wishlist", []);
@@ -47,21 +48,6 @@ const WishlistClient = () => {
     setWishlistBooks([]);
   };
 
-  if (isLoading) {
-    return <div className="text-center">Loading wishlist...</div>;
-  }
-
-  if (wishlistBooks.length === 0) {
-    return (
-      <div className="text-center">
-        <p className="text-xl mb-4">Your wishlist is empty.</p>
-        <Button asChild>
-          <a href="/books">Browse Books</a>
-        </Button>
-      </div>
-    );
-  }
-
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
@@ -72,16 +58,32 @@ const WishlistClient = () => {
         </Button>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {wishlistBooks.map(
-          (book) =>
-            book && (
-              <BookCard
-                key={book.id}
-                book={book}
-                isWishlisted={true}
-                onWishlist={() => handleRemoveFromWishlist(book.id)}
-              />
-            )
+        {isLoading && <LoadingSkeleton />}
+        {wishlistBooks?.length > 0 ? (
+          wishlistBooks.map(
+            (book) =>
+              book && (
+                <BookCard
+                  key={book.id}
+                  book={book}
+                  isWishlisted={true}
+                  onWishlist={() => handleRemoveFromWishlist(book.id)}
+                />
+              )
+          )
+        ) : (
+          <>
+            {!isLoading && (
+              <div className="col-span-full flex justify-center items-center min-h-[200px]">
+                <div className="text-center">
+                  <p className="text-xl mb-4">Your wishlist is empty.</p>
+                  <Button asChild>
+                    <a href="/books">Browse Books</a>
+                  </Button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

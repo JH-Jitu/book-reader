@@ -7,6 +7,7 @@ import SearchBar from "./SearchBar";
 import GenreFilter from "./GenreFilter";
 import PaginationComponent from "./Pagination";
 import { fetchBooks } from "@/lib/api";
+import { LoadingSkeleton } from "./LoadingSkeletonCard";
 
 const BookList = ({
   page: initialPage,
@@ -63,23 +64,36 @@ const BookList = ({
     router.push(`/books?page=${newPage}&search=${search}&genre=${genre}`);
   };
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
-
   return (
     <div>
-      <SearchBar onSearch={handleSearch} initialValue={search} />
-      <GenreFilter onFilterChange={handleGenreChange} initialValue={genre} />
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {books.map((book) => (
-          <BookCard key={book.id} book={book} />
-        ))}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 space-y-4 md:space-y-0">
+        <SearchBar onSearch={handleSearch} initialValue={search} />
+        <GenreFilter onFilterChange={handleGenreChange} initialValue={genre} />
       </div>
-      <PaginationComponent
-        currentPage={page}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {isLoading ? (
+          <LoadingSkeleton />
+        ) : error ? (
+          <div className="col-span-full text-center">{error}</div>
+        ) : books?.length > 0 ? (
+          books.map((book) => <BookCard key={book.id} book={book} />)
+        ) : (
+          <div className="col-span-full flex justify-center items-center h-64">
+            <p className="text-lg">
+              No books found. Try adjusting your search or filters.
+            </p>
+          </div>
+        )}
+      </div>
+      <div className="mt-4">
+        {!isLoading && !error && (
+          <PaginationComponent
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        )}
+      </div>
     </div>
   );
 };
