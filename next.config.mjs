@@ -11,7 +11,7 @@ const nextConfig = {
     ],
   },
   serverRuntimeConfig: {
-    maxDuration: 60,
+    maxDuration: 120,
   },
   experimental: {
     serverComponentsExternalPackages: ["react-server-dom-webpack"],
