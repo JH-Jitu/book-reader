@@ -1,27 +1,57 @@
-import axios from "axios";
+import { getCachedData, setCachedData } from "./cache";
 
 const API_URL = "https://gutendex.com/books";
 
 export async function fetchBooks(page = 1, search = "", genre = "") {
+  const cacheKey = `books_${page}_${search}_${genre}`;
+  const cachedData = getCachedData(cacheKey);
+
+  if (cachedData) {
+    return cachedData;
+  }
+
   const params = new URLSearchParams({
     page: page.toString(),
     search,
     topic: genre,
   });
 
-  const response = await axios.get(`${API_URL}?${params}`);
-  if (!response?.data) {
-    throw new Error("Failed to fetch books");
+  try {
+    const response = await fetch(`${API_URL}?${params}`, {
+      next: { revalidate: 3600 },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch books");
+    }
+    const data = await response.json();
+    setCachedData(cacheKey, data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching books:", error);
+    throw error;
   }
-
-  return response?.data;
 }
 
 export async function fetchBookById(id) {
-  const response = await axios.get(`${API_URL}/${id}`);
-  if (!response?.data) {
-    throw new Error("Failed to fetch book");
+  const cacheKey = `book_${id}`;
+  const cachedData = getCachedData(cacheKey);
+
+  if (cachedData) {
+    return cachedData;
   }
 
-  return response?.data;
+  try {
+    const response = await fetch(`${API_URL}/${id}`, {
+      next: { revalidate: 3600 },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch book");
+    }
+    const data = await response.json();
+    setCachedData(cacheKey, data);
+    return data;
+  } catch (error) {
+    console.error(`Error fetching book with id ${id}:`, error);
+    throw error;
+  }
 }

@@ -10,11 +10,18 @@ const nextConfig = {
       },
     ],
   },
-  serverRuntimeConfig: {
-    maxDuration: 120,
-  },
-  experimental: {
-    serverComponentsExternalPackages: ["react-server-dom-webpack"],
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=0, stale-while-revalidate=60",
+          },
+        ],
+      },
+    ];
   },
 };
 

@@ -1,30 +1,33 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import BookCard from "./BookCard";
 import SearchBar from "./SearchBar";
 import GenreFilter from "./GenreFilter";
 import PaginationComponent from "./Pagination";
-import useLocalStorage from "../hooks/useLocalStorage";
-import { fetchBooks } from "../lib/api";
+import { fetchBooks } from "@/lib/api";
 
-const BookList = ({ initialBooks, initialTotalPages }) => {
-  const [books, setBooks] = useState(initialBooks);
-  const [totalPages, setTotalPages] = useState(initialTotalPages);
-  const [isLoading, setIsLoading] = useState(false);
-  const [wishlist, setWishlist] = useLocalStorage("wishlist", []);
+const BookList = ({
+  page: initialPage,
+  search: initialSearch,
+  genre: initialGenre,
+}) => {
+  const [books, setBooks] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const router = useRouter();
-  const searchParams = useSearchParams();
 
-  const page = Number(searchParams.get("page")) || 1;
-  const search = searchParams.get("search") || "";
-  const genre = searchParams.get("genre") || "all";
+  const [page, setPage] = useState(initialPage);
+  const [search, setSearch] = useState(initialSearch);
+  const [genre, setGenre] = useState(initialGenre);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const loadBooks = async () => {
       setIsLoading(true);
+      setError(null);
       try {
         const data = await fetchBooks(
           page,
@@ -32,79 +35,51 @@ const BookList = ({ initialBooks, initialTotalPages }) => {
           genre === "all" ? "" : genre
         );
         setBooks(data.results);
-        setTotalPages(Math.ceil(data?.count / 32)); // default page size
-      } catch (error) {
-        console.error("Failed to fetch books:", error);
+        setTotalPages(Math.ceil(data.count / 32));
+      } catch (err) {
+        setError("Failed to load books. Please try again.");
       } finally {
         setIsLoading(false);
       }
     };
 
-    if (page !== 1 || search !== "" || genre !== "all") {
-      fetchData();
-    } else {
-      setBooks(initialBooks);
-      setTotalPages(initialTotalPages);
-    }
-  }, [page, search, genre, initialBooks, initialTotalPages]);
+    loadBooks();
+  }, [page, search, genre]);
 
   const handleSearch = (newSearch) => {
-    router.push(`/?page=1&search=${newSearch}&genre=${genre}`);
+    setSearch(newSearch);
+    setPage(1);
+    router.push(`/books?page=1&search=${newSearch}&genre=${genre}`);
   };
 
   const handleGenreChange = (newGenre) => {
-    router.push(`/?page=1&search=${search}&genre=${newGenre}`);
+    setGenre(newGenre);
+    setPage(1);
+    router.push(`/books?page=1&search=${search}&genre=${newGenre}`);
   };
 
   const handlePageChange = (newPage) => {
-    router.push(`/?page=${newPage}&search=${search}&genre=${genre}`);
+    setPage(newPage);
+    router.push(`/books?page=${newPage}&search=${search}&genre=${genre}`);
   };
 
-  const handleWishlist = (book) => {
-    setWishlist((prev) =>
-      prev.includes(book.id)
-        ? prev.filter((id) => id !== book.id)
-        : [...prev, book.id]
-    );
-  };
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 space-y-4 md:space-y-0">
-        <SearchBar onSearch={handleSearch} initialValue={search} />
-        <GenreFilter onFilterChange={handleGenreChange} initialValue={genre} />
+    <div>
+      <SearchBar onSearch={handleSearch} initialValue={search} />
+      <GenreFilter onFilterChange={handleGenreChange} initialValue={genre} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {books.map((book) => (
+          <BookCard key={book.id} book={book} />
+        ))}
       </div>
-
-      {isLoading ? (
-        <div className="flex justify-center items-center h-64">
-          <p className="text-lg">Loading books...</p>
-        </div>
-      ) : books.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {books.map((book) => (
-            <BookCard
-              key={book.id}
-              book={book}
-              isWishlisted={wishlist.includes(book.id)}
-              onWishlist={handleWishlist}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="flex justify-center items-center h-64">
-          <p className="text-lg">
-            No books found. Try adjusting your search or filters.
-          </p>
-        </div>
-      )}
-
-      <div className="mt-8">
-        <PaginationComponent
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
-      </div>
+      <PaginationComponent
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };
