@@ -1,7 +1,10 @@
 {
   "functions": {
-    "api/*.js": {
-      "maxDuration": 60
+    "src/app/api/**/*.js": {
+      "maxDuration": 30
+    },
+    "src/app/(routes)/**/*.js": {
+      "maxDuration": 30
     }
   }
 }
