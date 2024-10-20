@@ -1,37 +1,77 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 📚 Book Reader App
 
-## Getting Started
+![Book Reader App Banner](/images/banner.png)
 
-First, run the development server:
+## 📖 Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Book Reader is a modern, responsive web application built with Next.js that allows users to explore, search, and manage their reading lists. Leveraging the Gutendex API, it provides access to a vast library of public domain books.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Features
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- 🔍 Search functionality to find books by title, author, or genre
+- 📚 Browse books with an intuitive and responsive UI
+- ❤️ Wishlist functionality to save favorite books
+- 📱 Fully responsive design for seamless use across devices
+- 🌙 Dark mode support for comfortable reading in low-light conditions
+- 🚀 Fast page loads with server-side rendering and incremental static regeneration
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## 🛠️ Technologies Used
 
-## Learn More
+- [Next.js 14](https://nextjs.org/)
+- [React](https://reactjs.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [Gutendex API](https://gutendex.com/)
 
-To learn more about Next.js, take a look at the following resources:
+## 🚀 Getting Started
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Prerequisites
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- Node.js (v14 or later)
+- npm or yarn
 
-## Deploy on Vercel
+### Installation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Clone the repository:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-# book-reader
+   ```
+   git clone https://github.com/your-username/book-reader-app.git
+   ```
+
+2. Navigate to the project directory:
+
+   ```
+   cd book-reader-app
+   ```
+
+3. Install dependencies:
+
+   ```
+   npm install
+   # or
+   yarn install
+   ```
+
+4. Run the development server:
+
+   ```
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## 🖥️ Usage
+
+- **Home Page**: Displays featured books and categories
+- **Book Catalog**: Browse all available books with pagination
+- **Search**: Use the search bar to find specific books
+- **Book Details**: Click on a book to view its full details
+- **Wishlist**: Save books to your wishlist for later
+
+## 👏 Acknowledgements
+
+- [Gutendex](https://gutendex.com/) for providing the book API
+- [Vercel](https://vercel.com/) for hosting and deployment
+- All open-source libraries used in this project
