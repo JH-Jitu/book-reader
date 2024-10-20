@@ -10,6 +10,9 @@ const nextConfig = {
       },
     ],
   },
+  serverRuntimeConfig: {
+    maxDuration: 60, // Set maximum duration to 60 seconds (adjust as needed)
+  },
 };
 
 export default nextConfig;
